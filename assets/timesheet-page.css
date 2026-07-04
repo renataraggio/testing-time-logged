@@ -1,0 +1,591 @@
+/* =========================================================
+   Timesheets Page — pay-period table view
+   ========================================================= */
+
+/* ── Page wrapper (hidden by default, shown when timesheets sub-nav is active) ── */
+#view-timesheets {
+  display: none;
+}
+#view-timesheets.ts-page--active {
+  display: block;
+}
+#view-time-logged {
+  display: block;
+}
+#view-time-logged.ts-page--hidden {
+  display: none;
+}
+
+/* ── Timesheets page header — identical structure to .tl-header ── */
+.tsh-header {
+  background: #fff;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding-top: 4px;
+  width: 100%;
+}
+
+.tsh-header__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px;
+}
+
+.tsh-page-title {
+  font-family: Roboto, sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+  color: #111827;
+  margin: 0;
+  line-height: 32px;
+}
+
+.tsh-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tsh-btn-primary {
+  background: #2aa7ff;
+  color: #fff;
+  border: 1px solid #2aa7ff;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 20px;
+  white-space: nowrap;
+}
+.tsh-btn-primary:hover { background: #1a96ee; }
+
+.tsh-icon-btns {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tsh-icon-btn {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.tsh-icon-btn .material-symbols-rounded {
+  font-size: 18px;
+  line-height: 18px;
+  color: #6b7280;
+}
+
+.tsh-icon-btn:hover { background: #f9fafb; }
+
+.tsh-icon-btn:disabled {
+  cursor: not-allowed;
+  background: #fff;
+}
+
+.tsh-icon-btn:disabled .material-symbols-rounded {
+  color: #d1d5db;
+}
+
+/* ── Filter bar — matches Time Logged exactly ── */
+.tsh-header__filters {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 20px 12px;
+}
+
+.tsh-selects {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+}
+
+/* Select control — mirrors .tl-select exactly */
+.tsh-select {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  height: 40px;
+  width: 180px;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  position: relative;
+  user-select: none;
+  /* no gap — spacing handled by body/trailing padding */
+}
+.tsh-select:hover { background: #f9fafb; }
+
+.tsh-select__body {
+  flex: 1 0 0;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 6px;
+}
+
+.tsh-select__value {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #9ca3af;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  width: 100%;
+}
+
+.tsh-select__trailing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  height: 100%;
+  flex-shrink: 0;
+}
+.tsh-select__trailing .material-symbols-rounded {
+  font-size: 18px;
+  line-height: 18px;
+  color: #4b5563;
+}
+
+/* Filter button — mirrors .tl-filter-btn exactly */
+.tsh-filter-btn {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+.tsh-filter-btn:hover { background: #f9fafb; }
+.tsh-filter-btn--active { border-color: #0168dd; }
+.tsh-filter-btn .material-symbols-rounded {
+  font-size: 18px;
+  line-height: 18px;
+  color: #6b7280;
+}
+.tsh-filter-btn__label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #4b5563;
+}
+
+/* Date nav group — mirrors .tl-date-nav exactly */
+.tsh-date-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.tsh-arrow-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Arrow buttons — mirrors .tl-nav-btn exactly */
+.tsh-nav-btn {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.tsh-nav-btn:hover { background: #f9fafb; }
+.tsh-nav-btn .material-symbols-rounded {
+  font-size: 18px;
+  line-height: 18px;
+  color: #6b7280;
+}
+
+/* Date range field — mirrors .tl-date-range exactly */
+.tsh-date-range {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+.tsh-date-range:hover { background: #f9fafb; }
+
+.tsh-date-range__text {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.tsh-date-range__icon {
+  font-size: 18px;
+  line-height: 18px;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+/* Timezone selector — mirrors .tl-timezone exactly */
+.tsh-timezone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.tsh-timezone__label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.tsh-timezone__chevron {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ── Table body ── */
+.tsh-body {
+  padding: 20px;
+  background: #f3f4f6;
+  min-height: calc(100vh - 180px);
+}
+
+/* ── Timesheets table card ── */
+.tsh-table-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* ── Toolbar ── */
+.tsh-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 0 14px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.tsh-toolbar__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tsh-toolbar__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tsh-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 6px 10px;
+  background: #fff;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  color: #9ca3af;
+}
+.tsh-search .material-symbols-rounded { font-size: 16px; color: #9ca3af; }
+
+.tsh-col-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  color: #6b7280;
+}
+.tsh-col-toggle-btn:hover { background: #f3f4f6; }
+.tsh-col-toggle-btn .material-symbols-rounded { font-size: 18px; }
+
+/* ── Pay period table ── */
+.tsh-table-wrap {
+  overflow-x: auto;
+}
+
+.tsh-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  color: #111827;
+  min-width: 900px;
+}
+
+.tsh-table thead {
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tsh-table th {
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 400;
+  color: #6b7280;
+  font-size: 13px;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.tsh-th-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tsh-th-sort {
+  font-size: 14px;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+.tsh-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+  color: #111827;
+}
+
+.tsh-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tsh-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.tsh-table tbody tr:hover .tsh-pay-period-link {
+  text-decoration: underline;
+}
+
+/* ── Member cell ── */
+.tsh-member-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 160px;
+}
+
+.tsh-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  color: #fff;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.tsh-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.tsh-member-name {
+  font-weight: 500;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.tsh-member-role {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 1px;
+}
+
+/* ── Pay period cell ── */
+.tsh-pay-period-link {
+  color: #0168dd;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: Roboto, sans-serif;
+  text-align: left;
+}
+.tsh-pay-period-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Numeric columns ── */
+.tsh-num {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: #374151;
+}
+
+/* ── Amount cell ── */
+.tsh-amount {
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Status badge ── */
+.tsh-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.tsh-status--unpaid {
+  background: #fef3c7;
+  color: #d97706;
+}
+.tsh-status--pending {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+.tsh-status--paid {
+  background: #d1fae5;
+  color: #059669;
+}
+
+/* ── Checkbox column ── */
+.tsh-col-check {
+  width: 40px;
+  text-align: center;
+}
+
+.tsh-cb {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 3px;
+  display: inline-block;
+  cursor: pointer;
+  vertical-align: middle;
+  background: #fff;
+}
+
+/* ── Footer / total row ── */
+.tsh-table tfoot td {
+  padding: 12px 14px;
+  font-weight: 500;
+  border-top: 2px solid #e5e7eb;
+  border-bottom: none;
+  background: #f9fafb;
+  color: #111827;
+}
+
+/* ── Breadcrumb (shown in Time Logged when coming from Timesheets) ── */
+.tl-breadcrumb {
+  display: none;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 20px;
+  background: #fff;
+}
+
+.tl-breadcrumb.tl-breadcrumb--visible {
+  display: flex;
+}
+
+.tl-breadcrumb__back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #374151;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+.tl-breadcrumb__back:hover { color: #111827; }
+.tl-breadcrumb__back .material-symbols-rounded {
+  font-size: 18px;
+  color: #4b5563;
+}
+
+.tl-breadcrumb__sep {
+  color: #9ca3af;
+}
+
+.tl-breadcrumb__current {
+  color: #374151;
+  font-weight: 400;
+}
+
+.tl-breadcrumb__period {
+  color: #6b7280;
+}
+

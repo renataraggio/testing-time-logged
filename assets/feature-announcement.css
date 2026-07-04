@@ -1,0 +1,138 @@
+/* =============================================================
+   Feature Announcement Modal — "New: multi-member view"
+   Prefix: fa-
+   ============================================================= */
+
+.fa-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.5);
+  z-index: 2100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.fa-overlay[hidden] { display: none; }
+
+.fa-modal {
+  position: relative;
+  background: #fff;
+  border-radius: 14px;
+  width: 440px;
+  max-width: 100%;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: fa-pop 220ms ease;
+}
+
+@keyframes fa-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Slides ── */
+.fa-slide {
+  display: none;
+  flex-direction: column;
+}
+.fa-slide--active { display: flex; }
+
+.fa-illustration {
+  background: linear-gradient(180deg, #eef4ff 0%, #f7faff 100%);
+  padding: 28px 32px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fa-illustration svg { width: 100%; height: auto; max-height: 170px; }
+
+.fa-slide-body {
+  padding: 22px 28px 4px;
+  text-align: left;
+}
+
+.fa-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 100px;
+  background: #eff6ff;
+  color: #0168dd;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.fa-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 26px;
+  color: #111827;
+  margin: 0 0 8px;
+}
+
+.fa-desc {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ── Footer: dots + actions ── */
+.fa-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px 24px;
+  margin-top: 8px;
+}
+
+.fa-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.fa-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 100px;
+  background: #d1d5db;
+  cursor: pointer;
+  transition: width 180ms ease, background 180ms ease;
+}
+.fa-dot--active {
+  width: 18px;
+  background: #0168dd;
+}
+
+.fa-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.fa-btn {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.fa-btn--primary {
+  background: #2aa7ff;
+  border: 1px solid #2aa7ff;
+  color: #fff;
+  padding: 9px 16px;
+}
+.fa-btn--primary:hover { background: #1a96eb; border-color: #1a96eb; }

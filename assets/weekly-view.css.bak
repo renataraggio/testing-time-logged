@@ -1,0 +1,162 @@
+/* =============================================================
+   Weekly view table
+   Prefix: ts-wk-
+   ============================================================= */
+
+/* ── Weekly body inside day row ── */
+.ts-weekly-body {
+  display: none;
+  padding-bottom: 12px;
+}
+
+.ts-daily--weekly-mode .ts-weekly-body {
+  display: block;
+}
+
+/* Hide daily content (timeline + entries table) in weekly mode */
+.ts-daily--weekly-mode .ts-timeline-wrap,
+.ts-daily--weekly-mode .ts-table-wrap {
+  display: none;
+}
+
+/* ── Weekly total line below daily header ── */
+.ts-weekly-total {
+  display: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #111827;
+  padding: 0 0 4px;
+}
+
+.ts-weekly-total strong {
+  font-weight: 600;
+}
+
+.ts-daily--weekly-mode .ts-weekly-total {
+  display: block;
+}
+
+/* ── Table wrapper ── */
+.ts-wk-table-wrap {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* ── Table ── */
+.ts-wk-table {
+  width: 100%;
+  min-width: 960px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Column widths */
+.ts-wk-col-check   { width: 40px; }
+.ts-wk-col-project { width: 180px; }
+.ts-wk-col-day     { width: 100px; }
+.ts-wk-col-total   { width: 100px; }
+
+/* Header */
+.ts-wk-table thead th {
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: #1f2937;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ts-wk-table thead th:last-child { border-right: none; }
+
+/* Body rows */
+.ts-wk-table tbody tr { background: #fff; }
+.ts-wk-table tbody tr:hover { background: #fafafa; }
+
+.ts-wk-table tbody td {
+  background: inherit;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: #374151;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ts-wk-table tbody td:last-child { border-right: none; }
+.ts-wk-table tbody tr:last-child td { border-bottom: none; }
+
+/* Empty "--" cells */
+.ts-wk-cell--empty {
+  color: #9ca3af !important;
+  font-weight: 400 !important;
+}
+
+/* Total (last) row */
+.ts-wk-total-row td {
+  background: #f9fafb !important;
+  font-weight: 600 !important;
+  color: #111827 !important;
+}
+
+.ts-wk-total-row td:first-child {
+  /* checkbox cell in total row */
+}
+
+/* Timer icon in total row */
+.ts-wk-timer-icon {
+  font-size: 16px !important;
+  line-height: 16px;
+  color: #8b1dff;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+/* Total cell with icon */
+.ts-wk-total-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* "Add" / "Manage" link cells */
+.ts-wk-cell--link {
+  color: #2aa7ff !important;
+  font-weight: 400 !important;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ts-wk-cell--link:hover {
+  text-decoration: underline;
+}
+
+/* ── Sort icon in weekly header ── */
+.ts-wk-th-inner {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ts-wk-sort-icon {
+  font-size: 16px;
+  line-height: 16px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}

@@ -1,0 +1,379 @@
+/* =============================================================
+   Weekly time-grid view  (Google Calendar–style)
+   Prefix: ts-wkg-
+   ============================================================= */
+
+/* ── Weekly subheader: total + Grid/Table toggle ── */
+.ts-wk-subheader {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.ts-daily--weekly-mode .ts-wk-subheader { display: flex; }
+
+/* ── Grid / Table switcher pill ── */
+.ts-wk-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+  line-height: 1;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.ts-wk-toggle-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.ts-wk-toggle-btn__grid,
+.ts-wk-toggle-btn__table {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+}
+
+.ts-wk-toggle-btn__grid .material-symbols-rounded,
+.ts-wk-toggle-btn__table .material-symbols-rounded {
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.ts-daily--wk-grid .ts-wk-toggle-btn__grid { display: inline-flex; }
+.ts-daily--wk-table .ts-wk-toggle-btn__table { display: inline-flex; }
+
+/* ── Grid container ── */
+.ts-wkg-wrap { display: none; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+.ts-daily--weekly-mode.ts-daily--wk-grid .ts-wkg-wrap { display: flex; flex-direction: column; }
+
+/* ── Table container ── */
+.ts-wk-table-single { display: none; margin-bottom: 20px; }
+.ts-daily--weekly-mode.ts-daily--wk-table .ts-wk-table-single { display: block; }
+
+/* Hide day-row accordion in weekly mode */
+.ts-daily--weekly-mode .ts-days { display: none; }
+.ts-daily--weekly-mode .ts-days-multi { display: none !important; }
+.ts-daily--weekly-mode #ts-days-all { display: none !important; }
+
+/* Hide Columns button in weekly and monthly — expand/collapse stays */
+.ts-daily--weekly-mode .ts-col-btn,
+.ts-daily--calendar-mode .ts-col-btn { display: none; }
+
+
+/* ── Sticky day header ── */
+.ts-wkg-head {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.ts-wkg-corner {
+  width: 52px;
+  flex-shrink: 0;
+  border-right: 1px solid #e5e7eb;
+}
+
+.ts-wkg-day-hd {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0 8px;
+  border-right: 1px solid #e5e7eb;
+  gap: 2px;
+}
+.ts-wkg-day-hd:last-child { border-right: none; }
+
+.ts-wkg-day-hd__abbr {
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ts-wkg-day-hd__num {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #374151;
+  line-height: 1;
+}
+
+/* Active (selected) day header */
+.ts-wkg-day-hd--active .ts-wkg-day-hd__abbr { color: #0168dd; }
+.ts-wkg-day-hd--active .ts-wkg-day-hd__num {
+  background: #0168dd;
+  color: #fff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+
+/* ── Scrollable body ── */
+.ts-wkg-body {
+  display: flex;
+  overflow-y: auto;
+  max-height: 480px;
+  background: #fff;
+}
+
+/* Time label column */
+.ts-wkg-times {
+  width: 52px;
+  flex-shrink: 0;
+  position: relative;
+  border-right: 1px solid #e5e7eb;
+}
+
+.ts-wkg-hour-label {
+  position: absolute;
+  right: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: #9ca3af;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* Day columns container */
+.ts-wkg-cols {
+  flex: 1;
+  display: flex;
+  position: relative;
+}
+
+/* Individual day column */
+.ts-wkg-col {
+  flex: 1;
+  position: relative;
+  border-right: 1px solid #e5e7eb;
+}
+.ts-wkg-col:last-child { border-right: none; }
+
+/* Active column tint */
+.ts-wkg-col--active { background: #f5f9ff; }
+
+/* Horizontal hour lines inside columns */
+.ts-wkg-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #f3f4f6;
+  pointer-events: none;
+}
+.ts-wkg-line--half {
+  border-top-style: dashed;
+  border-top-color: #f3f4f6;
+}
+.ts-wkg-line--hour { border-top-color: #e5e7eb; }
+
+/* ── Time entry block ── */
+.ts-wkg-entry {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  border-radius: 4px;
+  padding: 4px 6px;
+  overflow: hidden;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: filter 120ms ease;
+  min-height: 6px;
+}
+
+.ts-wkg-entry:hover { filter: brightness(0.92); }
+
+.ts-wkg-entry__name {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.ts-wkg-entry__time {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+/* Very short entries: just a color bar, no text */
+.ts-wkg-entry--short .ts-wkg-entry__name,
+.ts-wkg-entry--short .ts-wkg-entry__time { display: none; }
+
+/* ── Add-time hover ghost ── */
+.ts-wkg-add-ghost {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 32px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(1, 104, 221, 0.08);
+  border: 1.5px dashed #0168dd;
+  border-radius: 4px;
+  cursor: pointer;
+  pointer-events: none;
+  z-index: 5;
+  transform: translateY(-50%);
+  transition: opacity 80ms ease;
+}
+
+.ts-wkg-add-ghost--visible {
+  display: flex;
+}
+
+.ts-wkg-add-ghost .material-symbols-rounded {
+  font-size: 18px;
+  color: #0168dd;
+  font-weight: 400;
+}
+
+/* Make columns the click target, not entries */
+.ts-wkg-col { cursor: crosshair; }
+.ts-wkg-entry { cursor: pointer; }
+
+/* ── Resize handle ── */
+.ts-wkg-resize-handle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  cursor: ns-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.ts-wkg-resize-handle::after {
+  content: '';
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.7);
+}
+
+.ts-wkg-entry:hover .ts-wkg-resize-handle { opacity: 1; }
+.ts-wkg-entry--resizing .ts-wkg-resize-handle { opacity: 1; }
+.ts-wkg-entry--resizing { opacity: 0.85; }
+.ts-wkg-entry--dragging { opacity: 0.85; box-shadow: 0 8px 24px rgba(0,0,0,0.22); z-index: 50; }
+.ts-wkg-entry:not(.ts-wkg-entry--dragging):not(.ts-wkg-entry--resizing) { cursor: grab; }
+body.ts-dragging, body.ts-dragging * { cursor: grabbing !important; }
+
+/* ── Summary table (table sub-view) ── */
+.ts-wkt-wrap {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+.ts-wkt-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.ts-wkt-table thead th {
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  padding: 10px 12px 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-align: left;
+  white-space: nowrap;
+}
+.ts-wkt-table thead th:first-child { width: 180px; }
+.ts-wkt-table thead th:last-child  { border-right: none; width: 72px; }
+.ts-wkt-table thead th.ts-wk-col--active { background: #eff6ff; }
+
+.ts-wkg-day-header { display: flex; flex-direction: column; gap: 1px; }
+.ts-wkg-day-header__abbr { font-size: 10px; font-weight: 500; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; }
+.ts-wkg-day-header__date { font-size: 13px; font-weight: 500; color: #374151; }
+thead th.ts-wk-col--active .ts-wkg-day-header__abbr { color: #0168dd; }
+thead th.ts-wk-col--active .ts-wkg-day-header__date { color: #0168dd; }
+
+.ts-wkt-table tbody tr { background: #fff; }
+.ts-wkt-table tbody tr:hover { background: #fafafa; }
+.ts-wkt-table tbody td {
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #374151;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.ts-wkt-table tbody td:last-child { border-right: none; }
+.ts-wkt-table tbody tr:last-child td { border-bottom: none; }
+.ts-wkt-table tbody td.ts-wk-col--active { background: #f5f9ff; }
+.ts-wkt-table tbody tr:hover td.ts-wk-col--active { background: #eaf2ff; }
+
+.ts-wkt-proj { display: flex; align-items: center; gap: 8px; }
+.ts-wkt-avatar {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Roboto', sans-serif; font-size: 9px; font-weight: 600; color: #fff;
+}
+.ts-wkt-name { font-size: 13px; font-weight: 500; color: #111827; overflow: hidden; text-overflow: ellipsis; }
+.ts-wkt-empty { color: #d1d5db !important; }
+.ts-wkt-total { font-weight: 600 !important; color: #111827 !important; }
+
+.ts-wkt-table tfoot td {
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+}
+.ts-wkt-table tfoot td:last-child { border-right: none; }
+.ts-wkt-table tfoot td.ts-wk-col--active { background: #eff6ff; color: #0168dd; }
+.ts-wkt-table tfoot td.ts-wkt-empty { color: #d1d5db; font-weight: 400; }
+
+/* ── Multi-member weekly: hide single-member containers, show multi table ── */
+.ts-daily--weekly-mode.ts-daily--wk-multi .ts-wkg-wrap { display: none !important; }
+.ts-daily--weekly-mode.ts-daily--wk-multi .ts-wk-table-single { display: none !important; }
+.ts-daily--weekly-mode.ts-daily--wk-multi .ts-wk-subheader { display: none !important; }
+.ts-daily--weekly-mode.ts-daily--wk-multi #ts-wk-multi { display: block !important; }

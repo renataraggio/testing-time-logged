@@ -1,0 +1,43 @@
+/* ── Toast notifications ──────────────────────────────────────────────
+   Single shared style for all success/error toasts across the prototype.
+   Success matches the app's existing green (see .ts-badge--billable),
+   not the dark/black style some flows previously showed inline. */
+
+.hs-toast-stack {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.hs-toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .16);
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.hs-toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hs-toast--success { background: #1a9f6f; }
+.hs-toast--error   { background: #c81e1e; }
+
+.hs-toast .material-symbols-rounded {
+  font-size: 18px;
+}

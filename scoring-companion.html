@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Scoring Companion — Time Logged User Testing</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font: 14px/1.5 Roboto, -apple-system, sans-serif;
+    background: #F3F4F6;
+    color: #111827;
+    margin: 0;
+    padding: 24px;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .sub { color: #6B7280; font-size: 13px; margin-bottom: 20px; }
+  .card {
+    background: #fff;
+    border: 1px solid #D6DBE6;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .track-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+  .track-tabs button {
+    flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #D6DBE6;
+    background: #F3F4F6; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .track-tabs button.active { background: #0168DD; color: #fff; border-color: #0168DD; }
+  .row { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
+  input[type=text] {
+    flex: 1; padding: 8px 10px; border: 1px solid #D6DBE6; border-radius: 8px; font-size: 13px;
+  }
+  button.primary {
+    padding: 10px 16px; border-radius: 8px; border: 1px solid #0168DD;
+    background: #0168DD; color: #fff; font-weight: 600; font-size: 13px; cursor: pointer;
+  }
+  button.primary:hover { background: #015bc0; }
+  button.danger { background: #dc2626; border-color: #dc2626; }
+  button.danger:hover { background: #b91c1c; }
+  #stats { color: #6B7280; font-size: 13px; margin-bottom: 12px; }
+  .task { border-top: 1px solid #eef0f3; padding-top: 12px; margin-top: 12px; }
+  .task:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+  .task-label { font-weight: 600; font-size: 14px; margin-bottom: 8px; }
+  .task-row { display: flex; gap: 6px; margin-bottom: 6px; }
+  .task-row button {
+    flex: 1; padding: 8px 4px; border-radius: 8px; border: 1px solid #D6DBE6;
+    background: #F3F4F6; font-size: 12px; cursor: pointer;
+  }
+  .task-row button:hover { background: #e5e7eb; }
+  .outcome-row { display: flex; gap: 6px; }
+  .outcome-row button { flex: 1; padding: 8px 4px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+  .outcome-success { border: 1px solid #a7f3d0; background: #fff; }
+  .outcome-success.active { background: #10b981; color: #fff; border-color: #10b981; font-weight: 600; }
+  .outcome-partial { border: 1px solid #fde68a; background: #fff; }
+  .outcome-partial.active { background: #f59e0b; color: #fff; border-color: #f59e0b; font-weight: 600; }
+  .outcome-failed { border: 1px solid #fecaca; background: #fff; }
+  .outcome-failed.active { background: #dc2626; color: #fff; border-color: #dc2626; font-weight: 600; }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  .hint { color: #9ca3af; font-size: 12px; margin-top: 12px; line-height: 1.5; }
+  .export-row { display: flex; gap: 8px; }
+  .export-row button { flex: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Scoring Companion</h1>
+  <div class="sub">Run this on your own machine while watching the interviewer's shared screen. It does not need the prototype open — you control timing and scoring independently, then combine your export with the interviewer's clickstream export afterward (both use wall-clock timestamps).</div>
+
+  <div class="card">
+    <div class="track-tabs">
+      <button id="tab-manager" class="active">Manager track</button>
+      <button id="tab-user">Regular user track</button>
+    </div>
+    <div id="stats">Not started</div>
+    <button id="startstop" class="primary" style="width:100%;">Start session</button>
+    <div class="row" style="margin-top:10px;">
+      <input type="text" id="pid" placeholder="Participant ID">
+      <input type="text" id="interviewer" placeholder="Interviewer name">
+    </div>
+  </div>
+
+  <div class="card" id="tasks"></div>
+
+  <div class="card">
+    <div class="row">
+      <input type="text" id="custom-note" placeholder="Custom note (optional)">
+    </div>
+    <div class="export-row">
+      <button id="export" class="primary">Export CSV</button>
+      <button id="reset">Reset session</button>
+    </div>
+    <div class="hint">Export produces the same columns as the interviewer notes-and-scoring.md worksheet (Task, Outcome, Prompt count, Score) — paste straight in, or drop the CSV into that interviewer's folder.</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var TASKS = {
+    manager: [
+      "View the team's daily time",
+      'Add time for the whole team at once (core task)',
+      'Drill into one member',
+      'Add time from the detail view',
+      'View time for yourself',
+    ],
+    user: [
+      'Add time for yourself',
+      'View your time weekly',
+    ],
+  };
+  var SCORE = { Success: 1, Partial: 0.5, Failed: 0 };
+
+  var track = 'manager';
+  var sessionState = 'idle'; /* idle | running | stopped */
+  var sessionStart = null;
+  var frozenElapsedMs = 0;
+  var notes = [];
+  var taskState = [];
+
+  function elapsedMs() {
+    return sessionState === 'running' ? (Date.now() - sessionStart) : frozenElapsedMs;
+  }
+
+  function resetTaskState() {
+    taskState = TASKS[track].map(function() { return { prompts: 0, outcome: null }; });
+  }
+  resetTaskState();
+
+  var tabManager = document.getElementById('tab-manager');
+  var tabUser = document.getElementById('tab-user');
+  var tasksEl = document.getElementById('tasks');
+  var statsEl = document.getElementById('stats');
+  var startStopBtn = document.getElementById('startstop');
+
+  function taskBlock(n, label) {
+    var div = document.createElement('div');
+    div.className = 'task';
+    div.innerHTML = ''
+      + '<div class="task-label">' + n + '. ' + label + '</div>'
+      + '<div class="task-row">'
+      + '<button data-role="prompt" data-n="' + n + '">Prompt +1 · 0</button>'
+      + '</div>'
+      + '<div class="outcome-row">'
+      + '<button class="outcome-success" data-role="outcome" data-outcome="Success" data-n="' + n + '">Success</button>'
+      + '<button class="outcome-partial" data-role="outcome" data-outcome="Partial" data-n="' + n + '">Partial</button>'
+      + '<button class="outcome-failed" data-role="outcome" data-outcome="Failed" data-n="' + n + '">Failed</button>'
+      + '</div>';
+    return div;
+  }
+
+  function renderTasks() {
+    tasksEl.innerHTML = '';
+    TASKS[track].forEach(function(label, i) { tasksEl.appendChild(taskBlock(i + 1, label)); });
+    wireTaskButtons();
+    updateButtonsForState();
+  }
+
+  function wireTaskButtons() {
+    Array.prototype.forEach.call(tasksEl.querySelectorAll('[data-role="prompt"]'), function(btn) {
+      btn.addEventListener('click', function() {
+        var n = parseInt(btn.dataset.n, 10);
+        taskState[n - 1].prompts++;
+        btn.textContent = 'Prompt +1 · ' + taskState[n - 1].prompts;
+      });
+    });
+    Array.prototype.forEach.call(tasksEl.querySelectorAll('[data-role="outcome"]'), function(btn) {
+      btn.addEventListener('click', function() {
+        var n = parseInt(btn.dataset.n, 10);
+        var outcome = btn.dataset.outcome;
+        taskState[n - 1].outcome = outcome;
+        Array.prototype.forEach.call(tasksEl.querySelectorAll('[data-role="outcome"][data-n="' + n + '"]'), function(b) {
+          b.classList.toggle('active', b.dataset.outcome === outcome);
+        });
+      });
+    });
+  }
+
+  function updateButtonsForState() {
+    var running = sessionState === 'running';
+    Array.prototype.forEach.call(tasksEl.querySelectorAll('button'), function(btn) { btn.disabled = !running; });
+    tabManager.disabled = running;
+    tabUser.disabled = running;
+  }
+
+  function setTrack(t) {
+    if (sessionState === 'running') return;
+    track = t;
+    tabManager.classList.toggle('active', t === 'manager');
+    tabUser.classList.toggle('active', t === 'user');
+    resetTaskState();
+    renderTasks();
+  }
+  tabManager.addEventListener('click', function() { setTrack('manager'); });
+  tabUser.addEventListener('click', function() { setTrack('user'); });
+
+  function renderStats() {
+    var elapsed = Math.round(elapsedMs() / 1000);
+    if (sessionState === 'idle') statsEl.textContent = 'Not started';
+    else if (sessionState === 'running') statsEl.textContent = elapsed + 's elapsed';
+    else statsEl.textContent = 'Stopped at ' + elapsed + 's';
+  }
+  setInterval(renderStats, 1000);
+
+  startStopBtn.addEventListener('click', function() {
+    if (sessionState === 'running') {
+      frozenElapsedMs = elapsedMs();
+      sessionState = 'stopped';
+      startStopBtn.textContent = 'Start session';
+      startStopBtn.classList.remove('danger');
+    } else {
+      if (taskState.some(function(s) { return s.outcome; }) &&
+        !confirm('Start a new session? This clears current scores — export first if you still need them.')) return;
+      resetTaskState();
+      notes = [];
+      sessionStart = Date.now();
+      frozenElapsedMs = 0;
+      sessionState = 'running';
+      startStopBtn.textContent = 'Stop session';
+      startStopBtn.classList.add('danger');
+      renderTasks();
+    }
+    updateButtonsForState();
+    renderStats();
+  });
+
+  function csvEscape(v) {
+    v = String(v == null ? '' : v);
+    if (/[",\n]/.test(v)) v = '"' + v.replace(/"/g, '""') + '"';
+    return v;
+  }
+  function toRows(rows) {
+    return rows.map(function(r) { return r.map(csvEscape).join(','); }).join('\n');
+  }
+
+  document.getElementById('export').addEventListener('click', function() {
+    var pid = document.getElementById('pid').value || '';
+    var interviewer = document.getElementById('interviewer').value || '';
+    var note = document.getElementById('custom-note').value || '';
+    var blocks = [];
+
+    blocks.push(toRows([
+      ['Participant', 'Interviewer', 'Track', 'Date', 'Duration (s)', 'Note'],
+      [pid, interviewer, track, new Date().toISOString().slice(0, 10), Math.round(elapsedMs() / 1000), note],
+    ]));
+
+    var scoringRows = [['Task', 'Outcome', 'Prompt count', 'Score']];
+    TASKS[track].forEach(function(label, i) {
+      var st = taskState[i];
+      scoringRows.push([
+        'Task ' + (i + 1) + ' — ' + label,
+        st.outcome || '',
+        st.outcome ? st.prompts : '',
+        st.outcome ? SCORE[st.outcome] : '',
+      ]);
+    });
+    blocks.push(toRows(scoringRows));
+
+    var csv = blocks.join('\n\n');
+    var pidClean = (pid || 'participant').trim().replace(/[^a-z0-9_-]+/gi, '_');
+    var blob = new Blob([csv], { type: 'text/csv' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'scoring-' + track + '-' + pidClean + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(a.href);
+  });
+
+  document.getElementById('reset').addEventListener('click', function() {
+    if (!confirm('Reset the current session? This clears all scores.')) return;
+    sessionState = 'idle';
+    sessionStart = null;
+    frozenElapsedMs = 0;
+    startStopBtn.textContent = 'Start session';
+    startStopBtn.classList.remove('danger');
+    resetTaskState();
+    renderTasks();
+    updateButtonsForState();
+    renderStats();
+  });
+
+  renderTasks();
+  renderStats();
+})();
+</script>
+</body>
+</html>

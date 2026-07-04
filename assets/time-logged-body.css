@@ -1,0 +1,577 @@
+/* =============================================================
+   Time Logged — page body
+   Prefix: ts- (timesheet)
+   ============================================================= */
+
+/* ── Page body wrapper ── */
+.tl-body {
+  padding: 16px 20px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =============================================================
+   STATS CARD (Timesheets Card / Desktop)
+   ============================================================= */
+.ts-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ts-card__date {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.ts-card__body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 36px;
+}
+
+/* Stats row */
+.ts-stats {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex: 1 0 0;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.ts-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  white-space: nowrap;
+}
+
+.ts-stat__label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ts-stat__label .material-symbols-rounded {
+  font-size: 12px;
+  line-height: 12px;
+  color: #6b7280;
+}
+
+.ts-stat__value {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #111827;
+}
+
+/* Hide logged time button */
+.ts-hide-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ts-hide-btn__text {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #0168dd;
+}
+
+.ts-hide-btn .material-symbols-rounded {
+  font-size: 18px;
+  line-height: 18px;
+  color: #0168dd;
+}
+
+/* =============================================================
+   DAILY TIME LOGGED SECTION
+   ============================================================= */
+.ts-daily {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0 0 8px 8px;
+  padding: 20px 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* When stats card is hidden (0 or 2+ members), drop the outer card chrome */
+.ts-daily--wk-multi {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+/* Section header */
+.ts-daily__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.ts-daily__title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #2d3137;
+  white-space: nowrap;
+}
+
+.ts-daily__controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 1 0 0;
+  min-width: 0;
+}
+
+/* Segmented Daily/Weekly buttons */
+.ts-segmented {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.ts-seg-btn {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: none;
+  border-left: 1px solid #d1d5db;
+  border-right: 1px solid #d1d5db;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  line-height: 21px;
+  cursor: pointer;
+  white-space: nowrap;
+  background: #fff;
+  color: #374151;
+  font-weight: 400;
+}
+
+.ts-seg-btn:first-child { border-left: none; }
+.ts-seg-btn:last-child  { border-right: none; }
+
+.ts-seg-btn--active {
+  background: #f0f5ff;
+  color: #0168dd;
+  font-weight: 500;
+}
+
+.ts-seg-btn:disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Icon buttons (view_column, expand_all) */
+.ts-icon-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ts-icon-btn:hover { background: #f9fafb; }
+
+.ts-icon-btn .material-symbols-rounded {
+  font-size: 18px;
+  line-height: 18px;
+  color: #6b7280;
+}
+
+/* =============================================================
+   DAY ROWS
+   ============================================================= */
+.ts-days {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.ts-day-row {
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Day row header (always visible) */
+.ts-day-row__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+  cursor: pointer;
+  width: 100%;
+  user-select: none;
+}
+
+.ts-day-row__header:hover .ts-day-row__chevron { color: #111827; }
+
+.ts-day-row__date {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.ts-day-row__hours {
+  color: #6b7280;
+}
+
+.ts-day-row__notes {
+  font-size: 18px;
+  line-height: 18px;
+  color: #0168dd;
+  flex-shrink: 0;
+}
+
+.ts-day-row__chevron {
+  margin-left: auto;
+  font-size: 24px;
+  line-height: 24px;
+  color: #4b5563;
+  flex-shrink: 0;
+}
+
+/* Expanded day body */
+.ts-day-row__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 12px;
+}
+
+/* Collapsed rows hide their body */
+.ts-day-row--collapsed .ts-day-row__body { display: none; }
+
+/* Chevron transition */
+.ts-day-row__chevron {
+  transition: transform 240ms ease;
+}
+.ts-day-row--collapsed .ts-day-row__chevron {
+  transform: rotate(0deg);
+}
+.ts-day-row--expanded .ts-day-row__chevron {
+  transform: rotate(180deg);
+}
+
+/* =============================================================
+   TIMELINE BAR
+   ============================================================= */
+.ts-timeline-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.ts-timeline-bar {
+  position: relative;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ts-timeline-seg {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 2px;
+}
+
+.ts-timeline-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding: 0 0;
+  position: relative;
+}
+
+.ts-timeline-label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 16px;
+  color: #9ca3af;
+}
+
+/* Position 6am on left, 12pm in center, 6pm on right */
+.ts-timeline-label--left  { position: absolute; left: 0; }
+.ts-timeline-label--mid   { position: absolute; left: 50%; transform: translateX(-50%); }
+.ts-timeline-label--right { position: absolute; right: 0; }
+
+/* =============================================================
+   DATA TABLE
+   ============================================================= */
+.ts-table-wrap {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.ts-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Column widths — proportionally fit a ~1100px content area */
+.ts-col-check   { width: 40px; }
+.ts-col-project { width: 220px; }
+.ts-col-reason  { width: 180px; }
+.ts-col-num     { width: 75px; }   /* Activity / Idle / Manual / Duration */
+.ts-col-status  { width: 110px; }
+.ts-col-time    { width: 160px; }
+.ts-col-actions { width: 130px; }
+
+/* Header cells */
+.ts-table thead th {
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: #1f2937;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ts-table thead th:last-child { border-right: none; }
+
+/* Checkbox header */
+.ts-table thead th.ts-col-check {
+  display: table-cell;
+}
+
+/* Sort icon in header */
+.ts-th-inner {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ts-th-sort {
+  font-size: 16px;
+  line-height: 16px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+/* Body rows */
+.ts-table tbody tr {
+  background: #fff;
+}
+
+.ts-table tbody tr:hover { background: #fafafa; }
+
+.ts-table tbody td {
+  background: inherit;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 21px;
+  color: #374151;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ts-table tbody td:last-child { border-right: none; }
+.ts-table tbody tr:last-child td { border-bottom: none; }
+
+/* Checkbox cell */
+.ts-cb {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Project cell */
+.ts-project-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ts-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 9px;
+  line-height: 1;
+  color: #fff;
+}
+
+.ts-project-name {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  color: #2aa7ff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Status badges */
+.ts-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.ts-badge--billable {
+  background: #def7ec;
+  color: #03543f;
+}
+
+.ts-badge--unbillable {
+  background: #fde8e8;
+  color: #c81e1e;
+}
+
+/* "Soon" tag on disabled coming-soon tabs (e.g. Monthly) — kept colorful on
+   purpose so it still reads as an announcement, not just more disabled-gray. */
+.tl-tab-soon-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 14px;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+/* Time span cell */
+.ts-time-span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  white-space: nowrap;
+}
+
+/* Actions button */
+.ts-actions-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #374151;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ts-actions-btn--active {
+  border-color: #2aa7ff;
+}
+
+.ts-actions-btn .material-symbols-rounded {
+  font-size: 18px;
+  line-height: 18px;
+  color: #6b7280;
+}
+
+.ts-actions-btn:hover { background: #f9fafb; }
+
+/* =============================================================
+   COLLAPSED CARD STATE
+   ============================================================= */
+
+/* When daily is hidden, card gets full border + rounded corners + tighter padding */
+.ts-card--collapsed {
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px 20px;
+  gap: 10px;
+}
+
+.ts-daily--hidden {
+  display: none;
+}

@@ -1,0 +1,462 @@
+/* =============================================================
+   Batch Add Time Modal
+   Prefix: batm-
+   ============================================================= */
+
+.batm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.batm-overlay[hidden] { display: none; }
+
+/* ── Modal container ── */
+.batm-modal {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  width: 780px;
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+}
+
+/* ── Header ── */
+.batm-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 20px 10px;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.batm-title {
+  flex: 1 0 0;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 26px;
+  color: #111928;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.batm-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 9999px;
+  color: #6b7280;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.batm-close-btn:hover { background: #f3f4f6; }
+.batm-close-btn .material-symbols-rounded { font-size: 18px; }
+
+/* ── Body ── */
+.batm-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 10px 20px 20px;
+  overflow-y: auto;
+}
+
+/* ── Section title ── */
+.batm-section-title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #111928;
+  margin: 0 0 12px;
+}
+
+/* ── Field label (uppercase) ── */
+.batm-field-label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 16px;
+  color: #4b5563;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.batm-field-label .material-symbols-rounded { font-size: 16px; color: #4b5563; }
+
+/* ── Time selection section ── */
+.batm-time-section {}
+
+.batm-timespan-row {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.batm-timespan-left {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.batm-timespan-inputs {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  width: 100%;
+}
+
+.batm-date-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  height: 40px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #111827;
+  flex: 1 0 0;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.batm-date-field .material-symbols-rounded { font-size: 18px; color: #4b5563; margin-left: auto; flex-shrink: 0; }
+
+.batm-from-to {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: 30px;
+  flex-shrink: 0;
+}
+
+.batm-span-lbl {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.batm-time-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  height: 40px;
+  width: 112px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #111827;
+  flex-shrink: 0;
+}
+
+.batm-time-field .material-symbols-rounded { font-size: 18px; color: #4b5563; margin-left: auto; }
+
+/* ── Hours column ── */
+.batm-hours-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+  align-items: flex-end;
+}
+
+.batm-hours-lbl {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  color: #4b5563;
+  text-transform: uppercase;
+  line-height: 18px;
+}
+
+.batm-hours-value {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #111827;
+  line-height: 40px;
+  text-align: right;
+}
+
+/* ── Add time span row ── */
+.batm-timespan-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.batm-add-span-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #2aa7ff;
+  line-height: 20px;
+  transition: background 0.15s;
+}
+
+.batm-add-span-btn:hover { background: #f0f9ff; }
+.batm-add-span-btn .material-symbols-rounded { font-size: 18px; }
+
+.batm-total-hours {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  color: #111827;
+  line-height: 24px;
+}
+
+.batm-total-hours strong { font-weight: 700; }
+
+/* ── Time assignment section ── */
+.batm-assignment-section {}
+
+/* ── Members/Teams row ── */
+.batm-members-label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 16px;
+  color: #4b5563;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.batm-members-row {
+  display: flex;
+  gap: 20px;
+}
+
+.batm-members-hint {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  color: #4b5563;
+  line-height: 16px;
+  margin-top: 4px;
+}
+
+/* ── Form rows (2-col) ── */
+.batm-form-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.batm-form-group {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── Select control ── */
+.batm-select {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 8px;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  gap: 0;
+  width: 100%;
+}
+
+.batm-select__inner {
+  flex: 1 0 0;
+  min-width: 0;
+  padding: 0 6px;
+  overflow: hidden;
+}
+
+.batm-select__placeholder {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #9ca3af;
+  line-height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.batm-select__chevron {
+  font-size: 18px;
+  color: #4b5563;
+  flex-shrink: 0;
+  padding: 0 6px;
+}
+
+/* ── Billable toggle ── */
+.batm-toggle-group {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.batm-toggle-label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  color: #4b5563;
+  text-transform: uppercase;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+}
+
+.batm-toggle-label .material-symbols-rounded { font-size: 18px; color: #4b5563; }
+
+.batm-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+}
+
+.batm-toggle {
+  width: 48px;
+  height: 24px;
+  border-radius: 12px;
+  background: #d1d5db;
+  border: none;
+  cursor: pointer;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.batm-toggle[aria-checked="true"] { background: #2aa7ff; }
+
+.batm-toggle__knob {
+  width: 18px;
+  height: 18px;
+  border-radius: 40px;
+  background: #fff;
+  display: block;
+  transition: transform 0.2s;
+}
+
+.batm-toggle[aria-checked="true"] .batm-toggle__knob { transform: translateX(24px); }
+
+.batm-toggle-text {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #111827;
+  line-height: 20px;
+}
+
+/* ── Notes section ── */
+.batm-notes-section {}
+
+.batm-add-note-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #2aa7ff;
+  line-height: 20px;
+  transition: background 0.15s;
+}
+
+.batm-add-note-btn:hover { background: #f0f9ff; }
+.batm-add-note-btn .material-symbols-rounded { font-size: 18px; }
+
+/* ── Footer ── */
+.batm-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+  padding: 20px;
+  flex-shrink: 0;
+}
+
+.batm-cancel-btn {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #4b5563;
+  cursor: pointer;
+  line-height: 20px;
+  transition: background 0.15s;
+}
+
+.batm-cancel-btn:hover { background: #f9fafb; }
+
+.batm-save-btn {
+  background: #2aa7ff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  line-height: 20px;
+  transition: background 0.15s;
+}
+
+.batm-save-btn:hover { background: #1a96f0; }
