@@ -1,15 +1,18 @@
 # User Testing Script — Manager Multi-Member Time Logged View
 
-**Prototype:** `http://localhost:3000` (run `python3 -m http.server 3000` from the project root)
-**Links** (role-locked, no visible toggle for participants):
-- Manager session: `http://localhost:3000/index.html?role=admin`
-- Regular user session: `http://localhost:3000/index.html?role=member`
+Prototype: hosted at [https://renataraggio.github.io/testing-time-logged/](https://renataraggio.github.io/testing-time-logged/) — no local server needed. (Ctrl + Shift + R  "hard refresh)  
 
-Two separate tracks, run independently with their own recruits. Record results in `../interviewers/<name>/notes-and-scoring.md` — not in this file.
+- Manager session: [https://renataraggio.github.io/testing-time-logged/index.html?role=admin](https://renataraggio.github.io/testing-time-logged/index.html?role=admin)
+- Regular user session: [https://renataraggio.github.io/testing-time-logged/index.html?role=member](https://renataraggio.github.io/testing-time-logged/index.html?role=member)
+
+⚠️ This repo and site are public — it's an unreleased internal feature. Take the repo private or delete it once testing wraps up.
+
+Two separate tracks, run independently with their own recruits. This single document covers both the moderator script and the worksheets you'll fill in live — everything you need for a session is in one place.  
+Scoring companion: open scoring-companion.html (in the project root)
 
 ## Setup
 
-| | Manager track | Regular user track |
+| | Manager | User |
 |---|---|---|
 | **Goal** | Confirm, unprompted, that they discover: (1) Time Logged now defaults to a multi-member view, (2) it can be filtered/selected by team, (3) time can be batch-added for the whole team at once, (4) a member's detail view is a real destination they can navigate within. | Confirm no regression — they can still add their own time and view it weekly. |
 | **Recruit** | 5–6 org owners/managers/team leads managing 2+ people. Mix of familiarity. Exclude anyone who's seen this prototype. | 3–4 individual contributors tracking their own time. Exclude anyone who's seen this prototype. |
@@ -53,7 +56,11 @@ Moderated, screen-share, record with permission, one moderator + notetaker if po
 - Prompt: *"Add time for [that member] from here."*
 - Note: this view caps Add Time at one entry (no "Add time span") — expected, but flag it if a participant seems surprised they can't add more here.
 
-**Task 5 — View time for yourself** (3 min)
+**Task 5 — Return to the multi-member view** (2 min)
+- Prompt: *"If you had to go back from this single view to the multi-member view, where would you go?"*
+- Watch: do they find a clear path back (breadcrumb, back button, team link) without hunting, or do they reach for browser back?
+
+**Task 6 — View time for yourself** (3 min)
 - Prompt: *"Now show me your own time, in that same kind of detail."*
 - Watch: do they find their own row in the team table and click into it, or look for a separate "my time" entry point?
 
@@ -91,7 +98,7 @@ Moderated, screen-share, record with permission, one moderator + notetaker if po
 | Partial | Completed with 1+ nudges, or in a degraded way | 0.5 |
 | Failed | Not completed even after nudging | 0 |
 
-Track **prompt count** (number of nudges) alongside each score. Interviewers record per-participant scores in their own `notes-and-scoring.md`; combine into task averages below once everyone's done.
+Track **prompt count** (number of nudges) alongside each score. Right after each task, also ask the standardized **Single Ease Question**: *"How easy or difficult was that?"* on a 1–5 scale (1 = very difficult, 5 = very easy). Unlike the Outcome/Score rubric, this isn't an interviewer judgment call — it's the participant's own rating, so it's directly comparable across interviewers and sessions. Interviewers record per-participant scores in their own `notes-and-scoring.md`; combine into task averages below once everyone's done.
 
 | Task                                                 | Avg. score |
 | ---------------------------------------------------- | ---------- |
@@ -99,7 +106,8 @@ Track **prompt count** (number of nudges) alongside each score. Interviewers rec
 | Manager Task 2 — Add time for whole team (core task) |            |
 | Manager Task 3 — Drill into one member               |            |
 | Manager Task 4 — Add time from detail view           |            |
-| Manager Task 5 — View time for yourself              |            |
+| Manager Task 5 — Return to multi-member view         |            |
+| Manager Task 6 — View time for yourself              |            |
 | User Task 1 — Add time for yourself                  |            |
 | User Task 2 — View time weekly                       |            |
 

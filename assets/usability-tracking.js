@@ -170,7 +170,7 @@
     var blob = new Blob([toCSV()], { type: 'text/csv' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'clickstream-' + track + '-' + pid + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+    a.download = 'click-' + track + '-' + pid + '.csv';
     document.body.appendChild(a);
     a.click();
     a.remove();
