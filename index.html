@@ -3126,14 +3126,12 @@
           utmAddSpanBtn.hidden = false;
         }
 
-        /* Timeline visualizes one person's day, so it shows whenever the
-           modal is scoped to exactly one member (locked or single, per
-           Figma: node 7695:71455) — it draws one segment per time span, so
-           it works alongside "Add time span" too. Multi/batch has no one
-           day to visualize, so it's hidden there. */
+        /* Timeline is the regular user's own self-service view (one person,
+           one entry) — not shown for a manager, whether they're scoped to
+           one specific member ("single") or several ("multi"/"batch"). */
         if (utmTimeline) {
-          utmTimeline.hidden = (mode === 'multi' || mode === 'batch');
-          if (utmTimeline.hidden === false && window._utmRecalcTimeSpans) window._utmRecalcTimeSpans();
+          utmTimeline.hidden = (mode !== 'locked');
+          if (mode === 'locked' && window._utmRecalcTimeSpans) window._utmRecalcTimeSpans();
         }
 
         /* Pre-fill WB member dropdown */
