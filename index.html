@@ -343,7 +343,7 @@
             </div>
           </div>
           <button type="button" class="ts-hide-btn">
-            <span class="ts-hide-btn__text">Hide logged time</span>
+            <span class="ts-hide-btn__text">Hide timesheet</span>
             <span class="material-symbols-rounded" aria-hidden="true">keyboard_arrow_up</span>
           </button>
         </div>
@@ -3007,12 +3007,12 @@
         if (isExpanded) {
           daily.classList.add('ts-daily--hidden');
           card.classList.add('ts-card--collapsed');
-          btnText.textContent = 'Show logged time';
+          btnText.textContent = 'Show timesheet';
           btnIcon.textContent = 'expand_more';
         } else {
           daily.classList.remove('ts-daily--hidden');
           card.classList.remove('ts-card--collapsed');
-          btnText.textContent = 'Hide logged time';
+          btnText.textContent = 'Hide timesheet';
           btnIcon.textContent = 'keyboard_arrow_up';
         }
       });
