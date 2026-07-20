@@ -119,6 +119,13 @@
     if (tooltipText) {
       continueTooltip.textContent = tooltipText;
     }
+
+    // The desktop app "confirming tracking" should surface on its own —
+    // the button lets someone trigger it right away, but it also starts
+    // automatically after a short wait if they don't click it.
+    if (currentStep === 2) {
+      startPendingSimulation();
+    }
   }
 
   sidebar.addEventListener("click", function () {
@@ -187,6 +194,8 @@
 
   var elapsedSeconds = 0;
   var timerInterval = null;
+  var pendingTimeout = null;
+  var PENDING_DELAY_MS = 3500;
 
   function pad(n) {
     return String(n).padStart(2, "0");
@@ -212,7 +221,19 @@
     taskRowTime.textContent = formatShort(elapsedSeconds);
   }
 
+  function startPendingSimulation() {
+    if (step2TimerStarted || pendingTimeout) return;
+    pendingTimeout = window.setTimeout(function () {
+      pendingTimeout = null;
+      startTimer();
+    }, PENDING_DELAY_MS);
+  }
+
   function startTimer() {
+    if (pendingTimeout) {
+      window.clearTimeout(pendingTimeout);
+      pendingTimeout = null;
+    }
     timerBar.classList.add("is-running");
     timerPlayIcon.textContent = "pause";
     taskRowPlayIcon.textContent = "pause";
