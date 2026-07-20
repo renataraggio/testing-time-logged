@@ -24,12 +24,13 @@ window.DESIGN_ANNOTATIONS_DATA = {
       kind: "required",
       title: "Tracking detection is a fixed setTimeout, not the real desktop app",
       description:
-        "There's intentionally no play/pause control here — a web page can't start or stop the real desktop app's timer. But right now \"detection\" is just a 3.5s window.setTimeout that flips the UI to tracking and starts a client-side counter (HH:MM:SS). There's no real desktop-app heartbeat behind it.",
+        "Intended behavior: the timer should only flip to \"tracking\" once the user has (1) downloaded/installed the desktop app AND (2) actually started a tracking session inside it. Today only half of that is real — Step 1's Continue is genuinely gated on the download click — but Step 2's \"tracking started\" signal is faked: a flat 3.5s window.setTimeout fires regardless of whether the app was installed or a timer was ever pressed for real. There's intentionally no play/pause control on this page, since a web page can't start/stop the real desktop app's timer either way.",
       target: "#timer-bar",
       priority: "high",
       sub: [
-        "Replace the fixed delay with a real signal: desktop app heartbeat / tracking-session-started event",
-        "Continue is gated on that same simulated signal — confirm that's the right gate vs. requiring a minimum tracked duration once this is real",
+        "Replace the fixed delay with a real signal: desktop-app heartbeat / tracking-session-started event tied to that specific user",
+        "Continue is gated on that same simulated signal — once real, confirm this is the right gate vs. requiring a minimum tracked duration",
+        "Simulation always resolves to \"success\" after 3.5s — there's no path here for testing what the UI should do if the real app never reports back",
       ],
     },
     {
@@ -61,6 +62,19 @@ window.DESIGN_ANNOTATIONS_DATA = {
         "Originally scoped as an embedded video (support.hubstaff.com quick-start guide), but that page has no actual video. Per stakeholder decision, this step currently just shows the Figma promo screenshot as a static image with no playback.",
       target: ".step3-image",
       sub: ["If a real onboarding video becomes available, swap this for a real embed and revisit the \"Finish\" CTA placement relative to it"],
+    },
+    {
+      id: "step3-necessity-open-question",
+      page: "onboarding",
+      kind: "suggestion",
+      title: "Open question: does this experiment need Step 3 at all?",
+      description:
+        "Unlike Steps 1-2, Step 3 doesn't gate on any real activation behavior — it's just a static promo image with a Finish button. Steps 1-2 alone already cover this experiment's core activation loop (download the app, confirm tracking works). Cutting Step 3 would shorten the flow and likely reduce drop-off, at the cost of losing the one touchpoint that surfaces the quick-start video/further-help content to new users.",
+      target: "#step-panel-3",
+      sub: [
+        "If kept: consider it optional/skippable rather than a required step",
+        "If cut: fold the quick-start link into Step 2's help modal so that content isn't lost entirely",
+      ],
     },
     {
       id: "footer-navigation-local-only",
