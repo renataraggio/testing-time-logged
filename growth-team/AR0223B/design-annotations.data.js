@@ -22,15 +22,25 @@ window.DESIGN_ANNOTATIONS_DATA = {
       id: "step2-timer-simulated",
       page: "onboarding",
       kind: "required",
-      title: "Timer is a local setInterval, not the real desktop app",
+      title: "Tracking detection is a fixed setTimeout, not the real desktop app",
       description:
-        "The play buttons (center + task row) just start a client-side counter formatted as HH:MM:SS. There's no real desktop-app tracking session behind it.",
+        "There's intentionally no play/pause control here — a web page can't start or stop the real desktop app's timer. But right now \"detection\" is just a 3.5s window.setTimeout that flips the UI to tracking and starts a client-side counter (HH:MM:SS). There's no real desktop-app heartbeat behind it.",
       target: "#timer-bar",
       priority: "high",
       sub: [
-        "Replace with a real signal: desktop app heartbeat / tracking-session-started event",
-        "Continue is currently gated on \"play was pressed once\" — confirm that's the right gate vs. requiring a minimum tracked duration",
+        "Replace the fixed delay with a real signal: desktop app heartbeat / tracking-session-started event",
+        "Continue is gated on that same simulated signal — confirm that's the right gate vs. requiring a minimum tracked duration once this is real",
       ],
+    },
+    {
+      id: "help-panel-mailto-placeholder",
+      page: "onboarding",
+      kind: "required",
+      title: "\"Email your manager\" mailto: uses a placeholder address",
+      description:
+        "The expanded help panel's manager-contact link points to your-manager@example.com — there's no real org/manager lookup wired up yet.",
+      target: "#help-panel-content",
+      sub: ["Wire this to the signed-in user's actual manager/org-owner email, or replace with an in-app request flow instead of mailto:"],
     },
     {
       id: "step1-widgets-approximated",

@@ -354,6 +354,115 @@ button {
   text-align: center;
 }
 
+/* ── Step 2: expandable "need help" panel ────────────────────────────────
+   Replaces the old static "Don't see a Project?" callout — now expands to
+   a Quick Start link, a couple of FAQs, a way to email a manager, and a
+   skip path, for anyone who can't or doesn't need to track right now.
+   ────────────────────────────────────────────────────────────────────── */
+
+.help-panel {
+  width: 100%;
+}
+
+.help-panel__trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  background: #eaf6ff;
+  border: 1px solid var(--primary-700);
+  border-radius: 8px;
+  color: var(--primary-800);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: left;
+}
+
+.help-panel__icon {
+  font-size: 18px;
+  color: var(--primary-800);
+}
+
+.help-panel__trigger-text {
+  flex: 1 1 0;
+}
+
+.help-panel__chevron {
+  font-size: 18px;
+  color: var(--primary-800);
+}
+
+.help-panel__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px solid var(--gray-300);
+  border-radius: 8px;
+}
+
+.help-panel__link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary-700);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.help-panel__link:hover {
+  text-decoration: underline;
+}
+
+.help-panel__link .material-symbols-rounded {
+  font-size: 18px;
+}
+
+.help-panel__faq {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.help-panel__faq-q {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-900);
+}
+
+.help-panel__faq-a {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--gray-600);
+}
+
+.help-panel__skip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--white);
+  border: 1px solid var(--gray-300);
+  border-radius: 6px;
+  color: var(--gray-600);
+  font-size: 14px;
+  transition: background var(--transition-fast);
+}
+
+.help-panel__skip:hover {
+  background: var(--gray-100);
+}
+
+.help-panel__skip .material-symbols-rounded {
+  font-size: 18px;
+  color: var(--gray-500);
+}
+
 /* ── Step 1: widget row (Utilization + timer mockup + Activity) ──────────
    Faithful-but-simplified recreation of the Figma dashboard widgets
    (gauge chart, activity benchmark bar, floating avatar badges).
@@ -634,31 +743,6 @@ button {
   background: #28c840;
 }
 
-.app-window__icon-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  margin-left: auto;
-  background: var(--white);
-  border: 1px solid var(--gray-300);
-  border-radius: 44px;
-}
-
-.app-window__icon-btn:first-of-type {
-  margin-left: auto;
-}
-
-.app-window__icon-btn + .app-window__icon-btn {
-  margin-left: 8px;
-}
-
-.app-window__icon-btn .material-symbols-rounded {
-  font-size: 16px;
-  color: var(--gray-500);
-}
-
 .app-window__body {
   display: flex;
   flex-direction: column;
@@ -794,25 +878,35 @@ button {
   color: var(--white);
 }
 
-.timer-play {
+.timer-status {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  background: var(--primary-700);
-  border: none;
-  border-radius: 44px;
-  transition: background var(--transition-fast);
+  gap: 8px;
+  padding: 8px 0;
 }
 
-.timer-play:hover {
-  background: var(--primary-800);
+.timer-status__icon {
+  font-size: 18px;
+  color: var(--gray-500);
 }
 
-.timer-play .material-symbols-rounded {
-  font-size: 22px;
-  color: var(--white);
+.timer-status__icon--pending {
+  animation: timer-status-spin 1s linear infinite;
+}
+
+.timer-status__icon--tracking {
+  color: var(--primary-700);
+}
+
+@keyframes timer-status-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.timer-status__text {
+  font-size: 14px;
+  color: var(--gray-600);
 }
 
 .app-window__search {
@@ -853,30 +947,18 @@ button {
   background: #eaf6ff;
 }
 
-.task-row__play {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  background: var(--primary-700);
-  border: none;
-  border-radius: 44px;
+.task-row__status {
+  display: block;
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--gray-300);
   transition: background var(--transition-fast);
 }
 
-.task-row__play:hover {
-  background: var(--primary-800);
-}
-
-.task-row__play:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--primary-700);
-}
-
-.task-row__play .material-symbols-rounded {
-  font-size: 10px;
-  color: var(--white);
+.task-row__status--tracking {
+  background: var(--primary-700);
 }
 
 .task-row__label {

@@ -148,12 +148,6 @@
               <span class="app-window__dot app-window__dot--red"></span>
               <span class="app-window__dot app-window__dot--yellow"></span>
               <span class="app-window__dot app-window__dot--green"></span>
-              <button type="button" class="app-window__icon-btn app-window__icon-btn--coffee" aria-label="Break" disabled>
-                <span class="material-symbols-rounded" aria-hidden="true">coffee</span>
-              </button>
-              <button type="button" class="app-window__icon-btn app-window__icon-btn--note" aria-label="Add note" disabled>
-                <span class="material-symbols-rounded" aria-hidden="true">edit</span>
-              </button>
             </div>
 
             <div class="app-window__body">
@@ -163,9 +157,10 @@
 
               <p class="app-window__project-title">Onboarding</p>
 
-              <button type="button" class="timer-play" id="timer-play" aria-label="Start timer" aria-pressed="false">
-                <span class="material-symbols-rounded" aria-hidden="true" id="timer-play-icon">play_arrow</span>
-              </button>
+              <div class="timer-status" id="timer-status">
+                <span class="material-symbols-rounded timer-status__icon timer-status__icon--pending" id="timer-status-icon" aria-hidden="true">progress_activity</span>
+                <span class="timer-status__text" id="timer-status-text">Waiting for the desktop app…</span>
+              </div>
 
               <div class="app-window__search">
                 <span class="material-symbols-rounded" aria-hidden="true">search</span>
@@ -175,18 +170,45 @@
               <div class="app-window__group-label">Your organization</div>
 
               <div class="app-window__task-row">
-                <button type="button" class="task-row__play" id="task-row-play" aria-label="Start timer">
-                  <span class="material-symbols-rounded" aria-hidden="true" id="task-row-play-icon">play_arrow</span>
-                </button>
+                <span class="task-row__status" id="task-row-status" aria-hidden="true"></span>
                 <span class="task-row__label">Onboarding</span>
                 <span class="task-row__time" id="task-row-time">0:00</span>
               </div>
             </div>
           </div>
 
-          <div class="onboarding-alert onboarding-alert--bottom">
-            <span class="material-symbols-rounded onboarding-alert__icon" aria-hidden="true">info</span>
-            <p class="onboarding-alert__text">Don’t see a Project? Ask your manager to add you to one.</p>
+          <div class="help-panel" id="help-panel">
+            <button type="button" class="help-panel__trigger" id="help-panel-trigger" aria-expanded="false" aria-controls="help-panel-content">
+              <span class="material-symbols-rounded help-panel__icon" aria-hidden="true">help</span>
+              <span class="help-panel__trigger-text">Need help, can’t track, or doesn’t apply?</span>
+              <span class="material-symbols-rounded help-panel__chevron" id="help-panel-chevron" aria-hidden="true">expand_more</span>
+            </button>
+
+            <div class="help-panel__content" id="help-panel-content" hidden>
+              <a class="help-panel__link" href="https://support.hubstaff.com/quick-start-guide-for-new-users/" target="_blank" rel="noopener noreferrer">
+                <span class="material-symbols-rounded" aria-hidden="true">menu_book</span>
+                Read the Quick Start guide
+              </a>
+
+              <div class="help-panel__faq">
+                <p class="help-panel__faq-q">How do I start tracking time?</p>
+                <p class="help-panel__faq-a">Download the desktop app. Then select a project and track time and activity to that project.</p>
+              </div>
+              <div class="help-panel__faq">
+                <p class="help-panel__faq-q">Where can I see the time I tracked?</p>
+                <p class="help-panel__faq-a">You can view your time and activity in Hubstaff’s web application.</p>
+              </div>
+
+              <a class="help-panel__link" href="mailto:your-manager@example.com?subject=Add%20me%20to%20a%20project&body=Hi%2C%20I%20don%27t%20see%20any%20projects%20assigned%20to%20me%20in%20Hubstaff%20%E2%80%94%20could%20you%20add%20me%20to%20one%3F">
+                <span class="material-symbols-rounded" aria-hidden="true">mail</span>
+                Email your manager to be added to a project
+              </a>
+
+              <button type="button" class="help-panel__skip" id="help-panel-skip">
+                Skip this step and go to Hubstaff
+                <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
+              </button>
+            </div>
           </div>
         </div>
 

@@ -38,10 +38,11 @@
     },
   };
 
-  // Tooltip copy for a disabled Continue — only steps with a real gate need one
+  // Tooltip copy for a disabled Continue — only steps with a real gate the user
+  // can act on need one. Step 2 now resolves on its own (no button to click),
+  // so it has no tooltip.
   var CONTINUE_TOOLTIP_COPY = {
     1: "Click the Download button for the desktop app to continue",
-    2: "Press play on the timer to continue",
   };
 
   function isContinueUnlocked() {
@@ -99,6 +100,12 @@
     if (tooltipText) {
       continueTooltip.textContent = tooltipText;
     }
+
+    // Step 2's tracking simulation starts the moment the step is shown —
+    // there's no button for the user to press, it just resolves on its own.
+    if (currentStep === 2) {
+      startPendingSimulation();
+    }
   }
 
   sidebar.addEventListener("click", function () {
@@ -150,18 +157,24 @@
     }
   });
 
-  // ── Step 2: interactive timer ────────────────────────────────────────────
+  // ── Step 2: passive tracking simulation ──────────────────────────────────
+  // There's no real desktop app to detect here, and a web page can't actually
+  // start/stop it anyway — so this never exposes a play/pause control. It just
+  // waits, then flips to "tracking" on its own, the way the real detection
+  // would surface once the desktop app reports in.
+
+  var PENDING_DELAY_MS = 3500;
 
   var timerBar = document.getElementById("timer-bar");
   var timerBarReadout = document.getElementById("timer-bar-readout");
-  var timerPlay = document.getElementById("timer-play");
-  var timerPlayIcon = document.getElementById("timer-play-icon");
-  var taskRowPlay = document.getElementById("task-row-play");
-  var taskRowPlayIcon = document.getElementById("task-row-play-icon");
+  var timerStatusIcon = document.getElementById("timer-status-icon");
+  var timerStatusText = document.getElementById("timer-status-text");
+  var taskRowStatus = document.getElementById("task-row-status");
   var taskRowTime = document.getElementById("task-row-time");
 
   var elapsedSeconds = 0;
   var timerInterval = null;
+  var pendingTimeout = null;
 
   function pad(n) {
     return String(n).padStart(2, "0");
@@ -187,12 +200,13 @@
     taskRowTime.textContent = formatShort(elapsedSeconds);
   }
 
-  function startTimer() {
+  function beginTracking() {
     timerBar.classList.add("is-running");
-    timerPlayIcon.textContent = "pause";
-    taskRowPlayIcon.textContent = "pause";
-    timerPlay.setAttribute("aria-pressed", "true");
-    timerPlay.setAttribute("aria-label", "Pause timer");
+    timerStatusIcon.classList.remove("timer-status__icon--pending");
+    timerStatusIcon.classList.add("timer-status__icon--tracking");
+    timerStatusIcon.textContent = "fiber_manual_record";
+    timerStatusText.textContent = "Tracking time…";
+    taskRowStatus.classList.add("task-row__status--tracking");
     timerBarReadout.textContent = formatHHMMSS(elapsedSeconds);
     taskRowTime.textContent = formatShort(elapsedSeconds);
     if (!timerInterval) {
@@ -203,33 +217,35 @@
       step2TimerStarted = true;
       if (currentStep === 2) {
         btnContinue.disabled = false;
-        continueTooltip.hidden = true;
       }
     }
   }
 
-  function pauseTimer() {
-    timerBar.classList.remove("is-running");
-    timerPlayIcon.textContent = "play_arrow";
-    taskRowPlayIcon.textContent = "play_arrow";
-    timerPlay.setAttribute("aria-pressed", "false");
-    timerPlay.setAttribute("aria-label", "Resume timer");
-    if (timerInterval) {
-      window.clearInterval(timerInterval);
-      timerInterval = null;
-    }
+  function startPendingSimulation() {
+    if (step2TimerStarted || pendingTimeout) return;
+    pendingTimeout = window.setTimeout(function () {
+      pendingTimeout = null;
+      beginTracking();
+    }, PENDING_DELAY_MS);
   }
 
-  function toggleTimer() {
-    if (timerBar.classList.contains("is-running")) {
-      pauseTimer();
-    } else {
-      startTimer();
-    }
-  }
+  // ── Step 2: expandable "need help" panel ─────────────────────────────────
 
-  timerPlay.addEventListener("click", toggleTimer);
-  taskRowPlay.addEventListener("click", toggleTimer);
+  var helpPanelTrigger = document.getElementById("help-panel-trigger");
+  var helpPanelContent = document.getElementById("help-panel-content");
+  var helpPanelChevron = document.getElementById("help-panel-chevron");
+  var helpPanelSkip = document.getElementById("help-panel-skip");
+
+  helpPanelTrigger.addEventListener("click", function () {
+    var expanded = helpPanelTrigger.getAttribute("aria-expanded") === "true";
+    helpPanelTrigger.setAttribute("aria-expanded", String(!expanded));
+    helpPanelContent.hidden = expanded;
+    helpPanelChevron.textContent = expanded ? "expand_more" : "expand_less";
+  });
+
+  helpPanelSkip.addEventListener("click", function () {
+    window.dispatchEvent(new CustomEvent("onboarding:skip"));
+  });
 
   renderStep();
 })();
