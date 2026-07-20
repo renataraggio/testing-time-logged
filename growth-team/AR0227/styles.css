@@ -374,6 +374,26 @@ button {
   color: var(--primary-800);
 }
 
+.support-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  padding: 10px 20px;
+  background: var(--white);
+  border: 1px solid var(--gray-300);
+  border-radius: 6px;
+  color: var(--gray-600);
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  transition: background var(--transition-fast);
+}
+
+.support-link:hover {
+  background: var(--gray-100);
+}
+
 .help-modal-overlay {
   position: fixed;
   inset: 0;
@@ -473,6 +493,32 @@ button {
   font-size: 13px;
   line-height: 1.4;
   color: var(--gray-600);
+}
+
+.help-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 20px 20px;
+}
+
+.help-modal__request-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  background: var(--primary-500);
+  border: none;
+  border-radius: 6px;
+  color: var(--white);
+  font-size: 14px;
+  text-decoration: none;
+  transition: background var(--transition-fast);
+}
+
+.help-modal__request-btn:hover {
+  background: var(--primary-600);
 }
 
 /* ── Step 1: widget row (Utilization + timer mockup + Activity) ──────────
@@ -589,7 +635,7 @@ button {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: conic-gradient(from 180deg, #b066ff 0deg 65deg, #ebc604 65deg 130deg, #d1d5db 130deg 180deg);
+  background: conic-gradient(from 180deg, #d1d5db 0deg 128deg, #9ca3af 128deg 138deg, var(--primary-500) 138deg 180deg);
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 10px));
   mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 10px));
 }
@@ -774,6 +820,29 @@ button {
   padding: 24px;
 }
 
+.timer-mock__bar-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.timer-mock__icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  background: var(--white);
+  border: 1px solid var(--gray-300);
+  border-radius: 44px;
+}
+
+.timer-mock__icon-btn .material-symbols-rounded {
+  font-size: 16px;
+  color: var(--gray-500);
+}
+
 .timer-mock__bar {
   position: relative;
   display: flex;
@@ -890,6 +959,27 @@ button {
   color: var(--white);
 }
 
+.timer-play {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  background: var(--primary-700);
+  border: none;
+  border-radius: 44px;
+  transition: background var(--transition-fast);
+}
+
+.timer-play:hover {
+  background: var(--primary-800);
+}
+
+.timer-play .material-symbols-rounded {
+  font-size: 22px;
+  color: var(--white);
+}
+
 .app-window__search {
   display: flex;
   align-items: center;
@@ -928,18 +1018,31 @@ button {
   background: #eaf6ff;
 }
 
-.task-row__status {
-  display: block;
-  width: 10px;
-  height: 10px;
+.task-row__play {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--gray-300);
+  background: var(--primary-700);
+  border: none;
+  border-radius: 44px;
   transition: background var(--transition-fast);
 }
 
-.task-row__status--tracking {
-  background: var(--primary-700);
+.task-row__play:hover {
+  background: var(--primary-800);
+}
+
+.task-row__play:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--primary-700);
+}
+
+.task-row__play .material-symbols-rounded {
+  font-size: 10px;
+  color: var(--white);
 }
 
 .task-row__label {
@@ -973,6 +1076,29 @@ button {
   padding: 14px;
   border-top: 1px solid var(--gray-300);
   background: var(--white);
+}
+
+/* Pushes the footer actions to the far right regardless of whether #btn-back
+   is present — space-between collapses to flex-start when btn-back is
+   display:none (hidden on step 1), so flex-end + this auto-margin is used
+   instead of relying on a two-item split. */
+#btn-back {
+  margin-right: auto;
+}
+
+.footer-skip {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  color: var(--primary-700);
+  font-size: 14px;
+}
+
+.footer-skip:hover {
+  color: var(--primary-800);
+  text-decoration: underline;
 }
 
 .onboarding-btn {

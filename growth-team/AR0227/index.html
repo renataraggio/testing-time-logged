@@ -91,10 +91,18 @@
                 <span class="app-window__dot app-window__dot--green"></span>
               </div>
               <div class="timer-mock">
-                <div class="timer-mock__bar">
-                  <span class="timer-mock__bar-time">02:25:00</span>
-                  <span class="timer-mock__bar-badge">
-                    <span class="material-symbols-rounded" aria-hidden="true">check</span>
+                <div class="timer-mock__bar-row">
+                  <span class="timer-mock__icon-btn" aria-hidden="true">
+                    <span class="material-symbols-rounded" aria-hidden="true">coffee</span>
+                  </span>
+                  <div class="timer-mock__bar">
+                    <span class="timer-mock__bar-time">02:25:00</span>
+                    <span class="timer-mock__bar-badge">
+                      <span class="material-symbols-rounded" aria-hidden="true">check</span>
+                    </span>
+                  </div>
+                  <span class="timer-mock__icon-btn" aria-hidden="true">
+                    <span class="material-symbols-rounded" aria-hidden="true">edit</span>
                   </span>
                 </div>
                 <p class="timer-mock__project">Product Design</p>
@@ -140,7 +148,7 @@
         <div class="step-panel" id="step-panel-2" data-step="2" hidden>
           <div class="onboarding-alert onboarding-alert--top">
             <span class="material-symbols-rounded onboarding-alert__icon" aria-hidden="true">info</span>
-            <p class="onboarding-alert__text">This timer will turn blue when you start tracking time. We’ll make sure everything is set up right.</p>
+            <p class="onboarding-alert__text" id="step2-alert-text">This timer will turn blue when you start tracking time. We’ll make sure everything is set up right.</p>
           </div>
 
           <div class="app-window">
@@ -157,6 +165,10 @@
 
               <p class="app-window__project-title">Onboarding</p>
 
+              <button type="button" class="timer-play" id="timer-play" aria-label="Simulate: start tracking">
+                <span class="material-symbols-rounded" aria-hidden="true" id="timer-play-icon">play_arrow</span>
+              </button>
+
               <div class="app-window__search">
                 <span class="material-symbols-rounded" aria-hidden="true">search</span>
                 <span>Search</span>
@@ -165,7 +177,9 @@
               <div class="app-window__group-label">Your organization</div>
 
               <div class="app-window__task-row">
-                <span class="task-row__status" id="task-row-status" aria-hidden="true"></span>
+                <button type="button" class="task-row__play" id="task-row-play" aria-label="Simulate: start tracking">
+                  <span class="material-symbols-rounded" aria-hidden="true" id="task-row-play-icon">play_arrow</span>
+                </button>
                 <span class="task-row__label">Onboarding</span>
                 <span class="task-row__time" id="task-row-time">0:00</span>
               </div>
@@ -173,6 +187,8 @@
           </div>
 
           <button type="button" class="help-link" id="help-link">Need help, can’t track, or doesn’t apply?</button>
+
+          <a class="support-link" href="https://support.hubstaff.com/contact" target="_blank" rel="noopener noreferrer">Reach out to Our Support Team</a>
 
           <div class="help-modal-overlay" id="help-modal-overlay" hidden>
             <div class="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-modal-title">
@@ -196,11 +212,14 @@
                   <p class="help-modal__faq-q">Where can I see the time I tracked?</p>
                   <p class="help-modal__faq-a">You can view your time and activity in Hubstaff’s web application.</p>
                 </div>
-
-                <a class="help-modal__link" href="mailto:your-manager@example.com?subject=Add%20me%20to%20a%20project&body=Hi%2C%20I%20don%27t%20see%20any%20projects%20assigned%20to%20me%20in%20Hubstaff%20%E2%80%94%20could%20you%20add%20me%20to%20one%3F">
-                  <span class="material-symbols-rounded" aria-hidden="true">mail</span>
-                  Email your manager to be added to a project
-                </a>
+                <div class="help-modal__faq">
+                  <p class="help-modal__faq-q">Don’t have a project?</p>
+                  <p class="help-modal__faq-a">To track time in Hubstaff, you need to create or select a project first. Without a project, time tracking won’t be recorded properly.</p>
+                </div>
+              </div>
+              <div class="help-modal__footer">
+                <button type="button" class="footer-skip" id="help-modal-skip">Skip</button>
+                <a class="help-modal__request-btn" href="mailto:your-manager@example.com?subject=Add%20me%20to%20a%20project&body=Hi%2C%20I%20don%27t%20see%20any%20projects%20assigned%20to%20me%20in%20Hubstaff%20%E2%80%94%20could%20you%20add%20me%20to%20one%3F">Request project</a>
               </div>
             </div>
           </div>
@@ -218,8 +237,10 @@
     </div>
 
     <footer class="onboarding-footer">
+      <button type="button" class="onboarding-btn" id="btn-back" disabled hidden>Back</button>
+
       <div class="onboarding-footer__actions">
-        <button type="button" class="onboarding-btn" id="btn-back" disabled hidden>Back</button>
+        <button type="button" class="footer-skip" id="btn-skip" hidden>Skip</button>
         <span class="continue-wrap" id="continue-wrap">
           <span class="onboarding-tooltip" id="continue-tooltip" hidden>Click the Download button for the desktop app to continue</span>
           <button type="button" class="onboarding-btn onboarding-btn--primary" id="btn-continue" disabled>

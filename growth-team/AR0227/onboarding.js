@@ -11,10 +11,12 @@
   var segmentsRoot = document.getElementById("segments");
   var segments = document.querySelectorAll("#segments .onboarding-segments__item");
   var btnBack = document.getElementById("btn-back");
+  var btnSkip = document.getElementById("btn-skip");
   var btnContinue = document.getElementById("btn-continue");
   var continueTooltip = document.getElementById("continue-tooltip");
   var onboardingRoot = document.getElementById("onboarding");
   var mainAction = document.getElementById("main-action");
+  var step2AlertText = document.getElementById("step2-alert-text");
 
   var stepPanels = {
     1: document.getElementById("step-panel-1"),
@@ -27,21 +29,29 @@
       title: "Download the desktop app",
       body: "This is used to track time to your projects and tasks",
     },
-    2: {
-      title: "Install the desktop app and track time to a project",
-      body: "Start the timer on the desktop app to confirm your setup.",
-    },
     3: {
       title: "Get familiar with Hubstaff",
       body: "Check out the video below and learn more about how to use Hubstaff",
     },
   };
 
-  // Tooltip copy for a disabled Continue — explains why it's disabled even on
-  // Step 2, where there's nothing to click (it resolves on its own).
+  // Step 2's copy switches once tracking is confirmed — before: generic
+  // "start the timer" instructions; after: a demo of what tracking looks like.
+  var STEP2_COPY_BEFORE = {
+    title: "Install the desktop app and track time to a project",
+    body: "Start the timer on the desktop app to confirm your setup",
+    alert: "This timer will turn blue when you start tracking time. We’ll make sure everything is set up right.",
+  };
+  var STEP2_COPY_AFTER = {
+    title: "Next, you’ll track time using the Hubstaff desktop app",
+    body: "After installing the app you downloaded on the previous step, follow the instructions below to track time",
+    alert: "Here’s a demo of how to track time using the Hubstaff app",
+  };
+
+  // Tooltip copy for a disabled Continue — only steps with a real gate need one
   var CONTINUE_TOOLTIP_COPY = {
     1: "Click the Download button for the desktop app to continue",
-    2: "Waiting for the desktop app to confirm tracking…",
+    2: "Wait for the desktop app to confirm tracking",
   };
 
   function isContinueUnlocked() {
@@ -62,10 +72,21 @@
     btnContinue.appendChild(icon);
   }
 
+  function applyStep2Copy() {
+    var copy = step2TimerStarted ? STEP2_COPY_AFTER : STEP2_COPY_BEFORE;
+    document.getElementById("onboarding-title").textContent = copy.title;
+    document.getElementById("onboarding-body").textContent = copy.body;
+    step2AlertText.textContent = copy.alert;
+  }
+
   function renderStep() {
     // Copy
-    document.getElementById("onboarding-title").textContent = STEP_COPY[currentStep].title;
-    document.getElementById("onboarding-body").textContent = STEP_COPY[currentStep].body;
+    if (currentStep === 2) {
+      applyStep2Copy();
+    } else {
+      document.getElementById("onboarding-title").textContent = STEP_COPY[currentStep].title;
+      document.getElementById("onboarding-body").textContent = STEP_COPY[currentStep].body;
+    }
 
     // Progress bar (skeleton template's discrete segments)
     segments.forEach(function (segment, index) {
@@ -81,9 +102,12 @@
     // Main action button only exists on step 1
     onboardingRoot.classList.toggle("has-main-action", currentStep === 1);
 
-    // Back button hidden on step 1 (nothing to go back to) and on the final step
-    btnBack.hidden = currentStep === 1 || currentStep === TOTAL_STEPS;
+    // Back button hidden only on step 1 (nothing to go back to)
+    btnBack.hidden = currentStep === 1;
     btnBack.disabled = currentStep === 1;
+
+    // Skip only makes sense on step 2 (project/tracking edge cases)
+    btnSkip.hidden = currentStep !== 2;
 
     // Continue/Finish button state
     setContinueButtonContent();
@@ -94,12 +118,6 @@
     continueTooltip.hidden = !(tooltipText && btnContinue.disabled);
     if (tooltipText) {
       continueTooltip.textContent = tooltipText;
-    }
-
-    // Step 2's tracking simulation starts the moment the step is shown —
-    // there's no button for the user to press, it just resolves on its own.
-    if (currentStep === 2) {
-      startPendingSimulation();
     }
   }
 
@@ -126,6 +144,12 @@
     }
   });
 
+  function skipOnboarding() {
+    window.dispatchEvent(new CustomEvent("onboarding:skip"));
+  }
+
+  btnSkip.addEventListener("click", skipOnboarding);
+
   // ── Step 1: "Download the desktop app" main action ──────────────────────
 
   mainAction.addEventListener("click", function () {
@@ -148,22 +172,21 @@
     }
   });
 
-  // ── Step 2: passive tracking simulation ──────────────────────────────────
-  // There's no real desktop app to detect here, and a web page can't actually
-  // start/stop it anyway — so this never exposes a play/pause control. It just
-  // waits, then flips to "tracking" on its own, the way the real detection
-  // would surface once the desktop app reports in.
-
-  var PENDING_DELAY_MS = 3500;
+  // ── Step 2: timer simulation ──────────────────────────────────────────────
+  // The play button simulates the desktop app reporting that tracking has
+  // started — a web page can't actually start/stop the real desktop app's
+  // timer, so this is a stand-in for that signal, not a real remote control.
 
   var timerBar = document.getElementById("timer-bar");
   var timerBarReadout = document.getElementById("timer-bar-readout");
-  var taskRowStatus = document.getElementById("task-row-status");
+  var timerPlay = document.getElementById("timer-play");
+  var timerPlayIcon = document.getElementById("timer-play-icon");
+  var taskRowPlay = document.getElementById("task-row-play");
+  var taskRowPlayIcon = document.getElementById("task-row-play-icon");
   var taskRowTime = document.getElementById("task-row-time");
 
   var elapsedSeconds = 0;
   var timerInterval = null;
-  var pendingTimeout = null;
 
   function pad(n) {
     return String(n).padStart(2, "0");
@@ -189,9 +212,11 @@
     taskRowTime.textContent = formatShort(elapsedSeconds);
   }
 
-  function beginTracking() {
+  function startTimer() {
     timerBar.classList.add("is-running");
-    taskRowStatus.classList.add("task-row__status--tracking");
+    timerPlayIcon.textContent = "pause";
+    taskRowPlayIcon.textContent = "pause";
+    timerPlay.setAttribute("aria-pressed", "true");
     timerBarReadout.textContent = formatHHMMSS(elapsedSeconds);
     taskRowTime.textContent = formatShort(elapsedSeconds);
     if (!timerInterval) {
@@ -203,23 +228,39 @@
       if (currentStep === 2) {
         btnContinue.disabled = false;
         continueTooltip.hidden = true;
+        applyStep2Copy();
       }
     }
   }
 
-  function startPendingSimulation() {
-    if (step2TimerStarted || pendingTimeout) return;
-    pendingTimeout = window.setTimeout(function () {
-      pendingTimeout = null;
-      beginTracking();
-    }, PENDING_DELAY_MS);
+  function pauseTimer() {
+    timerBar.classList.remove("is-running");
+    timerPlayIcon.textContent = "play_arrow";
+    taskRowPlayIcon.textContent = "play_arrow";
+    timerPlay.setAttribute("aria-pressed", "false");
+    if (timerInterval) {
+      window.clearInterval(timerInterval);
+      timerInterval = null;
+    }
   }
+
+  function toggleTimer() {
+    if (timerBar.classList.contains("is-running")) {
+      pauseTimer();
+    } else {
+      startTimer();
+    }
+  }
+
+  timerPlay.addEventListener("click", toggleTimer);
+  taskRowPlay.addEventListener("click", toggleTimer);
 
   // ── Step 2: "need help" modal ─────────────────────────────────────────────
 
   var helpLink = document.getElementById("help-link");
   var helpModalOverlay = document.getElementById("help-modal-overlay");
   var helpModalClose = document.getElementById("help-modal-close");
+  var helpModalSkip = document.getElementById("help-modal-skip");
 
   function openHelpModal() {
     helpModalOverlay.hidden = false;
@@ -231,6 +272,7 @@
 
   helpLink.addEventListener("click", openHelpModal);
   helpModalClose.addEventListener("click", closeHelpModal);
+  helpModalSkip.addEventListener("click", skipOnboarding);
 
   helpModalOverlay.addEventListener("click", function (event) {
     if (event.target === helpModalOverlay) closeHelpModal();

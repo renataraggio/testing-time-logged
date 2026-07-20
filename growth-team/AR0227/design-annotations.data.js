@@ -22,26 +22,46 @@ window.DESIGN_ANNOTATIONS_DATA = {
       id: "step2-timer-simulated",
       page: "onboarding",
       kind: "required",
-      title: "Tracking detection is a fixed setTimeout, not the real desktop app",
+      title: "Play button simulates tracking — it isn't real remote control",
       description:
-        "Intended behavior: the timer should only flip to \"tracking\" once the user has (1) downloaded/installed the desktop app AND (2) actually started a tracking session inside it. Today only half of that is real — Step 1's Continue is genuinely gated on the download click — but Step 2's \"tracking started\" signal is faked: a flat 3.5s window.setTimeout fires regardless of whether the app was installed or a timer was ever pressed for real. There's intentionally no play/pause control on this page, since a web page can't start/stop the real desktop app's timer either way.",
+        "Clicking play flips the UI to \"tracking\" and starts a client-side counter (HH:MM:SS). It's a stand-in for the desktop app reporting that a real tracking session started — a web page can't actually start/stop the real desktop app's timer, so this button doesn't reach the app at all.",
       target: "#timer-bar",
       priority: "high",
       sub: [
-        "Replace the fixed delay with a real signal: desktop-app heartbeat / tracking-session-started event tied to that specific user",
+        "Replace with a real signal: desktop-app heartbeat / tracking-session-started event tied to that specific user",
         "Continue is gated on that same simulated signal — once real, confirm this is the right gate vs. requiring a minimum tracked duration",
-        "Simulation always resolves to \"success\" after 3.5s — there's no path here for testing what the UI should do if the real app never reports back",
+        "No failure path exists here — there's no way to test what the UI should do if the real app never reports back",
       ],
     },
     {
-      id: "help-modal-mailto-placeholder",
+      id: "step2-copy-swap-inferred",
+      page: "onboarding",
+      kind: "suggestion",
+      title: "Step 2's title/body/alert swap on tracking start — sequencing inferred",
+      description:
+        "The Figma file (Growth Central WIP, node 20110-7094) has two frames both showing Step 2 (progress bar on segment 2) with different copy: one with generic \"install + start the timer\" instructions and a grey bar, another headlined \"Next, you'll track time using the Hubstaff desktop app\" with a blue/tracking bar. This build assumed the first is the \"before tracking\" state and the second is the \"after tracking starts\" state, and wires the copy to swap accordingly. That sequencing was not explicitly confirmed — the two frames could equally have been alternate drafts rather than sequential states.",
+      target: "#step2-alert-text",
+      sub: ["Confirm with design/PM whether this before/after copy swap is the intended behavior before this ships"],
+    },
+    {
+      id: "help-modal-request-project-placeholder",
       page: "onboarding",
       kind: "required",
-      title: "\"Email your manager\" mailto: uses a placeholder address",
+      title: "\"Request project\" button uses a placeholder mailto:",
       description:
-        "The \"need help\" modal's manager-contact link points to your-manager@example.com — there's no real org/manager lookup wired up yet.",
+        "The help modal's \"Request project\" button points to a mailto: for your-manager@example.com — there's no real org/manager lookup or in-app request flow wired up yet.",
       target: "#help-modal-overlay",
-      sub: ["Wire this to the signed-in user's actual manager/org-owner email, or replace with an in-app request flow instead of mailto:"],
+      sub: ["Wire this to the signed-in user's actual manager/org-owner, or replace mailto: with a real in-app request-a-project flow"],
+    },
+    {
+      id: "skip-reintroduced",
+      page: "onboarding",
+      kind: "suggestion",
+      title: "\"Skip\" was removed, then reintroduced to match this Figma update",
+      description:
+        "An earlier round of this experiment deliberately removed all skip-onboarding paths (footer \"Explore on my own\" and the help modal's skip link) on the reasoning that skipping doesn't apply to this experiment. This Figma update (Growth Central WIP) reintroduces a lightweight \"Skip\" text link in Step 2's footer and inside the help modal, so it's been added back to match — but that product decision (skip applies after all, at least for Step 2) was inferred from the design file, not explicitly reconfirmed.",
+      target: "#btn-skip",
+      sub: ["Confirm this reversal is intentional before shipping — it directly contradicts an earlier explicit decision on this same experiment"],
     },
     {
       id: "step1-widgets-approximated",
@@ -49,9 +69,9 @@ window.DESIGN_ANNOTATIONS_DATA = {
       kind: "suggestion",
       title: "Utilization gauge + benchmark bar are CSS approximations",
       description:
-        "The gauge (conic-gradient arc + needle) and the activity benchmark bar (org/job-type ticks at 40%/72%) recreate the Figma widgets' look, but the exact color-band angles and tick positions were not pixel-matched to Figma's arc/ellipse assets.",
+        "The gauge (conic-gradient arc + needle) recreates Figma's gray-then-blue dial, and the activity benchmark bar (org/job-type ticks at 40%/72%) recreates that widget's look — but neither is pixel-matched to Figma's assets. In particular, Figma's gauge uses discrete dashed tick marks around the arc; this build uses a smooth two-tone ring instead.",
       target: ".widgets-row",
-      sub: ["If this experiment needs exact benchmark values, confirm against Figma node 20030-524 rather than the placeholder 40%/72% ticks used here"],
+      sub: ["If this experiment needs exact benchmark values or the dashed-tick gauge style, confirm against Figma node 20110-7094 rather than this approximation"],
     },
     {
       id: "step3-video-descoped",
@@ -80,12 +100,12 @@ window.DESIGN_ANNOTATIONS_DATA = {
       id: "footer-navigation-local-only",
       page: "onboarding",
       kind: "required",
-      title: "Back / Continue only manage local step state",
+      title: "Back / Continue / Skip only manage local step state",
       description:
-        "Navigation currently just moves an in-memory currentStep counter and dispatches an onboarding:complete event on Finish. No real routing, progress persistence, or analytics tracking is wired up yet.",
+        "Navigation currently just moves an in-memory currentStep counter and dispatches onboarding:complete (Finish) or onboarding:skip (Skip) events. No real routing, progress persistence, or analytics tracking is wired up yet.",
       target: ".onboarding-footer__actions",
       sub: [
-        "Wire onboarding:complete to real app routing",
+        "Wire onboarding:complete / onboarding:skip to real app routing",
         "Add analytics events per step transition before this ships",
       ],
     },
